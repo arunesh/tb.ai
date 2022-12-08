@@ -10,6 +10,8 @@ var express = require('express');
 
 var app = express();
 
+app.use(express.static('files'));
+
 app.get('/', (req, resp) => {
     return resp.send('TALKBOX DHS OK');
 });
