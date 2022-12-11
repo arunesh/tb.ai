@@ -1,0 +1,6 @@
+
+ # to install nodemon:
+ npm install nodemon
+
+ # To start with nodemon : watch files, auto reload.
+ npx nodemon app.js
