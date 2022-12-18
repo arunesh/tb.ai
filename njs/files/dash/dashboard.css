@@ -75,6 +75,11 @@ body {
 .bg-bluedark {
   background-color: rgba(0, 59, 153, 1);
 }
+
+.blue-button-custom {
+  background-color: rgba(0, 59, 153, 1);
+}
+
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
