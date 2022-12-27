@@ -10,6 +10,8 @@ var express = require('express');
 
 var app = express();
 
+var db = require('./lib/dblayer.js');
+
 app.set('view engine', 'ejs');
 
 app.use(express.static('files'));
@@ -25,7 +27,9 @@ app.post('/', (req, resp) => {
 const PORT = parseInt(process.env.PORT) || 8080;
 
 
-console.log("Running port = " + PORT);
+console.log("Current port = " + PORT);
+
+db.helloDb();
 
 
 // app.listen is the blocking call. 
