@@ -1,0 +1,8 @@
+UserName,Name,Cred,LastLogin,TeamId,Admin
+user001,User One,pwd001,current,team001,False
+user002,User Two,pwd002,current,team001,False
+user003,User Three,pwd003,current,team002,False
+user004,User Four,pwd004,current,team002,False
+user005,User Five,pwd005,current,team003,False
+user006,User Six,pwd006,current,team003,False
+admin,Admin Admin,admin001,current,allteams,True
