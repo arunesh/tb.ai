@@ -40,6 +40,7 @@ db.on('trace', sql => {
  * Returns a Promise.
  */
 function dropTableIfExists(tablename) {
+    console.log(`Dropping table if exists ${tablename}`);
     return new Promise((resolve, reject) => {
         db.run(`DROP TABLE IF EXISTS ${tablename}`,
             [ ],
@@ -50,21 +51,68 @@ function dropTableIfExists(tablename) {
     });
 }
 
-function loadFromFile(filename, tablename) {
+function createUserTable() {
+    console.log("Creating user table");
+    const user_table_sql =
+        "CREATE TABLE IF NOT EXISTS Users (UserName VARCHAR(255)," +
+        "Name VARCHAR(255), " +
+        "Cred VARCHAR(255), " +
+        "LastLogin TEXT DEFAULT CURRENT_TIMESTAMP," +
+        "TeamId SMALLINT(255)," +
+        "Admin BIT(1))";
 
-    var stmt = db.prepare("INSERT INTO users VALUES (?,?)");
+    return new Promise((resolve, reject) => {
+        db.run(user_table_sql,
+            [ ],
+            err => {
+                console.log(err);
+                if (err) reject(err);
+                else resolve();
+            })
+    });
+}
 
-    fs.createReadStream(filename)
-        .pipe(parse({ delimiter: ",", from_line: 2 }))
-        .on("data", function (row) {
-            console.log(row);
-        })
-        .on("end", function () {
-            console.log("finished");
-        })
-        .on("error", function (error) {
-            console.log(error.message);
+async function loadUserTable(filename) {
+    const user_table_sql =
+        "CREATE TABLE Users (UserName varchar(255)," +
+        "Name varchar(255), " +
+        "Cred varchar(255)," +
+        "LastLogin DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+        "TeamId SMALLINT(255)," +
+        "Admin BIT(1))";
+
+    await dropTableIfExists("Users");
+
+    await createUserTable();
+
+    var stmt = db.prepare("INSERT INTO Users VALUES (?,?,?,?,?,?)");
+
+    const parser = fs.createReadStream(filename)
+        .pipe(parse({ delimiter: ",", from_line: 2 }));
+
+    for await (const row of parser) {
+        console.log(row);
+        await new Promise((resolve, reject) => {
+            db.run('INSERT INTO Users (UserName, Name, Cred, TeamId, Admin) VALUES (?, ?, ?, ?, ?)',
+                row[0], row[1], row[2], row[4], row[5], err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    resolve();
+                });
         });
+    }
+
+}
+
+function dumpUsersTable() {
+    db.all('SELECT UserName username, Name name, Cred cred, TeamId teamid, Admin admin FROM Users', [], (err, rows) => {
+        if (err) {
+            console.log(err);
+        } else {
+            rows.forEach( (row) => console.log(row.name));
+        }
+    });
 }
 
 function dumpDb() {
@@ -75,6 +123,16 @@ function dumpDb() {
 	});
 }
 
+console.log("Creating Users db");
+
+loadUserTable("lib/users.csv");
+
+
+console.log("Closing DB");
+// db.close();
+
+/*
+
 const local = repl.start({
     prompt: ">> ",
     useGlobal: true
@@ -83,8 +141,9 @@ const local = repl.start({
 // Expose variables
 local.context.openDb = openDb;
 local.context.dumpDb = dumpDb;
+local.context.dumpUsersTable = dumpUsersTable;
 local.context.sqlite3 = sqlite3;
-local.context.loadFromFile = loadFromFile;
+local.context.loadFromFile = loadUserTable;
 
 local.on('exit', () => {
     console.log("Exiting dblayer repl.");
@@ -92,3 +151,23 @@ local.on('exit', () => {
     process.exit();
 });
 
+*/
+
+/** Random code
+ *
+    db.serialize( () => {
+        db.run(`DROP TABLE IF EXISTS ${tablename}`)
+            .run(user_table_sql);
+    }
+
+    .on("data", function (row) {
+            console.log(row);
+        })
+        .on("end", function () {
+            console.log("finished");
+        })
+        .on("error", function (error) {
+            console.log(error.message);
+        });
+
+ */
