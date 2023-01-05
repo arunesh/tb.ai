@@ -75,17 +75,17 @@ function createUserTable() {
 async function loadUserTable(filename) {
     const user_table_sql =
         "CREATE TABLE Users (UserName varchar(255)," +
-        "Name varchar(255), " +
-        "Cred varchar(255)," +
+        "Name VARCHAR(255), " +
+        "Cred VARCHAR(255)," +
         "LastLogin DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
-        "TeamId SMALLINT(255)," +
+        "TeamId VARCHAR(255)," +
         "Admin BIT(1))";
 
     await dropTableIfExists("Users");
 
     await createUserTable();
 
-    var stmt = db.prepare("INSERT INTO Users VALUES (?,?,?,?,?,?)");
+    //var stmt = db.prepare("INSERT INTO Users VALUES (?,?,?,?,?,?)");
 
     const parser = fs.createReadStream(filename)
         .pipe(parse({ delimiter: ",", from_line: 2 }));
@@ -93,8 +93,9 @@ async function loadUserTable(filename) {
     for await (const row of parser) {
         console.log(row);
         await new Promise((resolve, reject) => {
+            let isAdmin = row[5].toLowerCase() === 'true';
             db.run('INSERT INTO Users (UserName, Name, Cred, TeamId, Admin) VALUES (?, ?, ?, ?, ?)',
-                row[0], row[1], row[2], row[4], row[5], err => {
+                row[0], row[1], row[2], row[4], isAdmin, err => {
                     if (err) {
                         console.error(err);
                     }
@@ -125,7 +126,8 @@ function dumpDb() {
 
 console.log("Creating Users db");
 
-loadUserTable("lib/users.csv");
+loadUserTable("lib/users.csv")
+.finally(() => db.close());
 
 
 console.log("Closing DB");
