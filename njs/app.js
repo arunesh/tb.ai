@@ -17,12 +17,18 @@ app.set('view engine', 'ejs');
 app.use(express.static('files'));
 
 app.get('/', (req, resp) => {
-    return resp.send('TALKBOX DHS OK');
+    resp.send('TALKBOX DHS OK');
 });
 
 app.post('/', (req, resp) => {
-    return resp.send('Got a POST Requst.');
+    resp.send('Got a POST Requst.');
 });
+
+app.get('/trans', async (req, resp) => {
+    await db.fetchTranslations("");
+    resp.send('Fetched translations');
+});
+
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
 

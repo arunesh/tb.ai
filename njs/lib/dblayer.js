@@ -3,10 +3,15 @@
 
 
 const repl = require('repl');
-
 const sqlite3 = require('sqlite3').verbose();
-// const db = new sqlite3.Database(':memory:', sqlite3.OPEN_CREATE);
-const db = new sqlite3.Database('temp-1.sqlite3', sqlite3.OPEN_CREATE);
+
+const db = new sqlite3.Database('temp2.sq', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+        console.error(err.message);
+    }
+    console.log('Connected to the database.');
+
+});
 
 
 // User table:
@@ -23,8 +28,10 @@ const db = new sqlite3.Database('temp-1.sqlite3', sqlite3.OPEN_CREATE);
 // CorrectTargetLangText can be NULL but one must be non NULL
 // TicketID, TranslationID, CreationDate, LastUpdated, CorrectSrcLangText, CorrectTargetLangText, JSON-list of comments
 //
+
+console.log("Self database test");
 db.serialize(() => {
-    db.run("CREATE TABLE lorem (info TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS lorem (info TEXT)");
 
     const stmt = db.prepare("INSERT INTO lorem VALUES (?)");
     for (let i = 0; i < 10; i++) {
@@ -97,24 +104,18 @@ async function fetchTranslations(username) {
                 console.error(err);
             }
             rows.forEach((row) => {
-                console.log(row.name);
+                console.log(row);
             });
         });
     });
 }
-
-const local = repl.start(">>");
 
 // Example of an IIFE
 (() => {
     console.log("test IIFE");
 })();
 
-local.on('exit', () => {
-    console.log("Exiting dblayer repl.");
-    db.close();
-    process.exit();
-});
+fetchTranslations("").then(() => console.log("Translations fetched"));
 
 exports.helloDb = helloDb;
 exports.createTables = createTables;
