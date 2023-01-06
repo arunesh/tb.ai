@@ -106,6 +106,53 @@ async function loadUserTable(filename) {
 
 }
 
+function createTranslationsTable() {
+    console.log("Creating translations table");
+    const trans_table_sql = 
+            "CREATE TABLE Translations (TranslationId VARCHAR(255)," +
+            "UserName VARCHAR(255)," +
+            "SrcLang VARCHAR(255)," +
+            "TargetLang VARCHAR(255)," +
+            "AudioFilePath VARCHAR(3000)," +
+            "SrcLangText VARCHAR(3000)," +
+            "TargetLangText VARCHAR(3000)," +
+            "DeviceName VARCHAR(255)," +
+            "TicketId INT(255))";
+
+    return new Promise((resolve, reject) => {
+        db.run(trans_table_sql,
+            [ ],
+            err => {
+                console.log(err);
+                if (err) reject(err);
+                else resolve();
+            })
+    });
+}
+
+async function loadTranslationsTable(filename) {
+    await dropTableIfExists("Translations");
+
+    await createTranslationsTable();
+
+    const parser = fs.createReadStream(filename)
+        .pipe(parse({ delimiter: ",", from_line: 2 }));
+
+    for await (const row of parser) {
+        console.log(row);
+        await new Promise((resolve, reject) => {
+            db.run('INSERT INTO Translations (TranslationId, UserName, SrcLang, TargetLang, AudioFilePath, SrcLangText, TargetLangText, DeviceName, TicketId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                row, err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    resolve();
+                });
+        });
+    }
+
+}
+
 function dumpUsersTable() {
     db.all('SELECT UserName username, Name name, Cred cred, TeamId teamid, Admin admin FROM Users', [], (err, rows) => {
         if (err) {
@@ -124,10 +171,15 @@ function dumpDb() {
 	});
 }
 
+
+async function loadAllTables() {
+    await loadUserTable("lib/users.csv");
+    await loadTranslationsTable("lib/translations.csv");
+}
+
 console.log("Creating Users db");
 
-loadUserTable("lib/users.csv")
-.finally(() => db.close());
+loadAllTables().finally(() => db.close());
 
 
 console.log("Closing DB");
