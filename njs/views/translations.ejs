@@ -1,0 +1,42 @@
+<%- include('partials/header.ejs'); -%>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <h5 class="py-3" >List of Translations</h3>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Device</th>
+              <th>Source Lang</th>
+              <th>Target Lang</th>
+              <th>Playback</th>
+              <th>Source Text</th>
+              <th>Target Text</th>
+              <th>User ID</th>
+              <th>Ticket ID</th>
+            </tr>
+           </thead>
+         <tbody>
+         <% rowlist.forEach(function(row) { %>
+            <tr>
+              <td><%= row.tid %></td>
+              <td><%= row.devicename %></td>
+              <td><%= row.srclang %></td>
+              <td><%= row.targetlang %></td>
+              <td><span data-feather="play"></span> </td>
+              <td><%= row.srclangtext %></td>
+              <td><%= row.targetlangtext %></td>
+              <td><%= row.username %></td>
+              <td><%= row.ticketid %></td>
+            </tr>
+         <% }); %>
+         </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- These two divs are from the header --!>
+  </div>
+</div>
+<%- include('partials/footer.ejs'); -%>

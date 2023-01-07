@@ -12,6 +12,8 @@ var app = express();
 
 var db = require('./lib/dblayer.js');
 
+const testdata = require('./lib/testdata.js');
+
 const { createLightship } = require('lightship');
 
 const lightship = createLightship();
@@ -21,7 +23,24 @@ app.set('view engine', 'ejs');
 app.use(express.static('files'));
 
 app.get('/', (req, resp) => {
-    resp.send('TALKBOX DHS OK');
+    resp.redirect('/login.html');
+});
+
+app.get('/transtest', (req, resp) => {
+    resp.render('translations.ejs', {rowlist: testdata.trans});
+});
+
+app.get('/translations.html', async (req, resp) => {
+    const translations = await db.fetchTranslations("");
+    console.log("Fetched translations:" + translations);
+    resp.render('translations.ejs', {rowlist: translations});
+});
+
+
+app.get('/users.html', async (req, resp) => {
+    const users = await db.fetchUsers();
+    console.log("Fetched users:" + users);
+    resp.render('users.ejs', {rowlist: users});
 });
 
 app.post('/', (req, resp) => {

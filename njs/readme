@@ -1,3 +1,13 @@
+TODOs:
+Last updated Jan 7:
+
+1. EJS rendering for translations, users, teams.
+2. Login / Logout with cookies logic. 
+3. Host on AWS Elastic beanstalk.
+4. Host on Google cloud.
+5. Feedback form, ability to modify the database.
+6. Expose an API.
+
 
  # to install nodemon:
  npm install nodemon

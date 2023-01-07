@@ -59,34 +59,6 @@ function createTables() {
 
         db.run(user_table_sql);
     });
-
-    // Translations table:
-//    db.serialize(() => {
-//        const trans_table_sql = 
-//            "CREATE TABLE Translations (TranslationId INT(255)," +
-//            "UserName varchar(255)," +
-//            "SrcLang varchar(255)," +
-//            "TargetLang varchar(255)," +
-//            "AudioFilePath varchar(3000)," +
-//            "SrcLangText varchar(3000)," +
-//            "TargetLangText varchar(3000)," +
-//            "TicketId INT(255))";
-//
-//        db.run(trans_table_sql);
-//    });
-//
-//    // Tickets table:
-//    db.serialize(() => {
-//        const tickets_table_sql =
-//            "CREATE TABLE Tickets (TicketId INT(255), " +
-//            "TranslationId INT(255), " +
-//            "CreationDate DATETIME DEFAULT CURRENT_TIMESTAMP, " + 
-//            "LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
-//            "CorrectSrcLangText varchar(3000), " +
-//            "CorrectTargetLangText varchar(3000), " +
-//            "Comments varchar(10000))";
-//        db.run(tickets_table_sql);
-//    });
 }
 
 function helloDb() {
@@ -94,25 +66,51 @@ function helloDb() {
 }
 
 
-async function fetchTranslations(username) {
+function fetchTranslations(username) {
     let sql = "SELECT TranslationId tid, UserName username, SrcLang srclang, " +
         "TargetLang targetlang, AudioFilePath audiofilepath, SrcLangText srclangtext, " +
         "TargetLangText targetlangtext, DeviceName devicename, TicketId ticketid FROM " +
         " Translations ORDER BY TranslationId";
 
-    await new Promise((resolve, reject) => {
-        let output = "";
+    return new Promise((resolve, reject) => {
+        let output = "ERROR"; // TODO: Fix this
+
+        // db.all() gets all ROWS.
         db.all(sql, [], (err, rows) => {
             if (err) {
                 console.error(err);
+                resolve(output);
+                return;
             }
-            rows.forEach((row) => {
-                console.log(row);
-                output += JSON.stringify(row);
-                output += "\n";
-            });
+            output = rows;
+
+            // Resolves the promise and sets the return value.
+            console.log("OUTPUT = " + JSON.stringify(rows));
+            resolve(output);
         });
-        resolve(output);
+    });
+}
+
+function fetchUsers() {
+    let sql = "SELECT UserName username, Name name, LastLogin lastlogin, " +
+        "TeamId teamid, Admin admin FROM Users ORDER BY UserName";
+
+    return new Promise((resolve, reject) => {
+        let output = "ERROR"; // TODO: Fix this
+
+        // db.all() gets all ROWS.
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error(err);
+                resolve(output);
+                return;
+            }
+            output = rows;
+            // Resolves the promise and sets the return value.
+            console.log("OUTPUT = " + JSON.stringify(rows));
+            resolve(output);
+        });
+
     });
 }
 
@@ -130,6 +128,7 @@ fetchTranslations("").then(() => console.log("Translations fetched"));
 exports.helloDb = helloDb;
 exports.createTables = createTables;
 exports.fetchTranslations = fetchTranslations;
+exports.fetchUsers = fetchUsers;
 exports.closeDbLayer = closeDbLayer;
 
 // db.close();
