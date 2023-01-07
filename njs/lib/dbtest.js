@@ -106,6 +106,28 @@ async function loadUserTable(filename) {
 
 }
 
+function createTicketsTable() {
+    console.log("Creating Tickets table");
+    const tickets_table_sql = 
+            "CREATE TABLE Tickets (TicketId VARCHAR(255)," +
+            "TranslationIdVARCHAR(255)," +
+            "CreationDate DATETIME DEFAULT CURRENT_TIMESTAMP," +
+            "LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP," +
+            "CorrectSrcLangText VARCHAR(3000)," +
+            "CorrectTargetLangText VARCHAR(3000)," +
+            "CommentsJson VARCHAR(5000))";
+
+    return new Promise((resolve, reject) => {
+        db.run(tickets_table_sql,
+            [ ],
+            err => {
+                console.log(err);
+                if (err) reject(err);
+                else resolve();
+            })
+    });
+}
+
 function createTranslationsTable() {
     console.log("Creating translations table");
     const trans_table_sql = 
