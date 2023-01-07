@@ -29,20 +29,22 @@ const db = new sqlite3.Database('temp2.sq', sqlite3.OPEN_READWRITE, (err) => {
 // TicketID, TranslationID, CreationDate, LastUpdated, CorrectSrcLangText, CorrectTargetLangText, JSON-list of comments
 //
 
-console.log("Self database test");
-db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS lorem (info TEXT)");
+function selfDbTest() {
+    console.log("Self database test");
+    db.serialize(() => {
+        db.run("CREATE TABLE IF NOT EXISTS lorem (info TEXT)");
 
-    const stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-    for (let i = 0; i < 10; i++) {
-        stmt.run("Ipsum " + i);
-    }
-    stmt.finalize();
+        const stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+        for (let i = 0; i < 10; i++) {
+            stmt.run("Ipsum " + i);
+        }
+        stmt.finalize();
 
-    db.each("SELECT rowid AS id, info FROM lorem", (err, row) => {
-        console.log(row.id + ": " + row.info);
+        db.each("SELECT rowid AS id, info FROM lorem", (err, row) => {
+            console.log(row.id + ": " + row.info);
+        });
     });
-});
+}
 
 function createTables() {
     // User table:
@@ -99,15 +101,23 @@ async function fetchTranslations(username) {
         " Translations ORDER BY TranslationId";
 
     await new Promise((resolve, reject) => {
-        db.all (sql, [], (err, rows) => {
+        let output = "";
+        db.all(sql, [], (err, rows) => {
             if (err) {
                 console.error(err);
             }
             rows.forEach((row) => {
                 console.log(row);
+                output += JSON.stringify(row);
+                output += "\n";
             });
         });
+        resolve(output);
     });
+}
+
+function closeDbLayer() {
+    db.close();
 }
 
 // Example of an IIFE
@@ -120,5 +130,6 @@ fetchTranslations("").then(() => console.log("Translations fetched"));
 exports.helloDb = helloDb;
 exports.createTables = createTables;
 exports.fetchTranslations = fetchTranslations;
+exports.closeDbLayer = closeDbLayer;
 
 // db.close();

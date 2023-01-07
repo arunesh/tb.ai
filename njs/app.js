@@ -12,6 +12,10 @@ var app = express();
 
 var db = require('./lib/dblayer.js');
 
+const { createLightship } = require('lightship');
+
+const lightship = createLightship();
+
 app.set('view engine', 'ejs');
 
 app.use(express.static('files'));
@@ -37,11 +41,25 @@ console.log("Current port = " + PORT);
 
 db.helloDb();
 
-
 // app.listen is the blocking call. 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
+const server = app.listen(PORT, () => {
+    console.log(lightship);
+    lightship.then((actualLightship) => {
+        actualLightship.signalReady()
+        console.log("Lightship activated.");
+    });
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+});
+
+
+process.on('SIGTERM', () => {
+    console.log("SIGTERM signal received; closing HTTP server");
+    server.close(() => {
+        console.log("HTTP Server closed");
+        db.closeDbLayer();
+    });
+    process.exit();
 });
 
 

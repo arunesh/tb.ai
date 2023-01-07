@@ -1,0 +1,5 @@
+TranslationID,UserName,SrcLang,TargetLang,AudioFilepath,SrcLangText,TargetLangText,DeviceName,TicketId
+T001,user001,English,French,/file/path/t001.wav,"Whats your name","translated to french",Red-A,TK001
+T003,user002,German,English,/file/path/t002.wav,"German text ","This is a good place",Red-B,TK002
+T004,user001,Spanish,English,/file/path/t003.wav,"Spanish text ","Whats for lunch today",Red-C,TK003
+T005,user003,Korean,English,/file/path/t004.wav,"Korean text ","This is a good place",Red-A,TK004
