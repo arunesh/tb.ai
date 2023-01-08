@@ -55,23 +55,6 @@
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <!--
-   We do not want the search.
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-  <ul class="navbar-nav px-3 ">
-    <li class="nav-item text-nowrap">
-  -->
-  <!--
-  <ul class="navbar-nav px-3 ">
-    <li class="nav-item ">
-      <a class="nav-link" href="#">Admin</a>
-    </li>
-  </ul>
-  <ul class="navbar-nav px-3 ">
-    <li class="nav-item ">
-      <a class="nav-link" href="#">Sign out</a>
-    </li>
-  </ul> -->
 </nav>
 
 <div class="container">
@@ -83,6 +66,7 @@
 		<div class="form-group ">
 			<form id="form" method="post">
 				<input type="text" name="email" pattern="[-!#$%&'*+\/0-9=?ก-๙A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?ก-๙A-Z^_a-z`{|}~])*@[ก-๙a-zA-Z0-9](-*\.?[ก-๙a-zA-Z0-9])*\.[ก-๙a-zA-Z](-?[ก-๙a-zA-Z0-9])+$" placeholder="E-mail" required="" class="form-control"><br />
+				<input type="text" name="username" placeholder="Username" required class="form-control"><br />
 				<input type="password" name="password" placeholder="Password" required="" class="form-control"><br />
 				<input type="submit" value="Login" class="btn btn-success blue-button-custom">
 			</form>
@@ -92,7 +76,7 @@
 		</div>
 		<div id="LangTable"><a href="/profile" id="aa"></a>
 		</div>
-		<div><span>Do you forgot password? </span><a href="/forgetpass">click here</a>
+		<div><span>Did you forget your password? </span><a href="/forgetpass">click here</a>
 		</div>
 		<div id="LangTable"><span>Do you want to register a new Account? </span><a href="/">click here</a>
 		</div>

@@ -70,13 +70,20 @@ app.get('/teams.html', async (req, resp) => {
     //resp.send('Teams: ' + JSON.stringify(teams));
 });
 
-app.post('/', (req, resp) => {
-    resp.send('Got a POST Requst.');
-});
-
 app.get('/trans', async (req, resp) => {
     await db.fetchTranslations("");
     resp.send('Fetched translations');
+});
+
+/////////////////////
+// POST requests
+app.post('/', (req, resp) => {
+    resp.send('Got a POST Request.');
+});
+
+app.post('/login', (req, resp) => {
+    console.log("Received values:" + JSON.stringify(req.body));
+    resp.send('HOLD ON');
 });
 
 /////////////////////
