@@ -8,10 +8,12 @@
 var express = require('express');
 var app = express();
 var db = require('./lib/dblayer.js');
+var session = require('express-session');
 
 const testdata = require('./lib/testdata.js');
 const { createLightship } = require('lightship');
 const lightship = createLightship();
+const oneDay = 1000 * 60 * 60 * 24;
 
 
 ///////////////////////
@@ -31,6 +33,16 @@ app.use(express.static('files'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// session middleware to manage cookie-based user sessions.
+// https://www.npmjs.com/package/express-session
+app.use(session({
+    secret: "Your secret key",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false
+});
+
+
 app.get('/', (req, resp) => {
     resp.redirect('/login.html');
 });
@@ -44,7 +56,6 @@ app.get('/translations.html', async (req, resp) => {
     console.log("Fetched translations:" + translations);
     resp.render('translations.ejs', {rowlist: translations});
 });
-
 
 app.get('/users.html', async (req, resp) => {
     const users = await db.fetchUsers();
