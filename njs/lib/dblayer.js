@@ -66,6 +66,9 @@ function helloDb() {
 }
 
 
+/**
+ * Returns a Promise which resolves to a list of Translations dict objects.
+ */
 function fetchTranslations(username) {
     let sql = "SELECT TranslationId tid, UserName username, SrcLang srclang, " +
         "TargetLang targetlang, AudioFilePath audiofilepath, SrcLangText srclangtext, " +
@@ -91,6 +94,9 @@ function fetchTranslations(username) {
     });
 }
 
+/**
+ * Returns a Promise which resolves to a list of User dict objects.
+ */
 function fetchUsers() {
     let sql = "SELECT UserName username, Name name, LastLogin lastlogin, " +
         "TeamId teamid, Admin admin FROM Users ORDER BY UserName";
@@ -114,6 +120,40 @@ function fetchUsers() {
     });
 }
 
+function fetchTeams() {
+    // We first fetch the list of all users and then compute the many to one relationship to a team.
+    let sql = "SELECT UserName username, Name name, LastLogin lastlogin, " +
+        "TeamId teamid, Admin admin FROM Users ORDER BY UserName";
+
+    return new Promise((resolve, reject) => {
+        let output = "ERROR"; // TODO: Fix this
+        let teams = {};
+
+        // db.all() gets all ROWS.
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error(err);
+                resolve(output);
+                return;
+            }
+            output = rows;
+            rows.forEach((row) => {
+                let userid = row['username'];
+                let teamid = row['teamid'];
+                if (teamid in teams) {
+                    teams[teamid] = teams[teamid] + ", " + userid;
+                } else {
+                    teams[teamid] = userid;
+                }
+            });
+            // Resolves the promise and sets the return value.
+            console.log("OUTPUT = " + JSON.stringify(teams));
+            resolve(teams);
+        });
+
+    });
+}
+
 function closeDbLayer() {
     db.close();
 }
@@ -129,6 +169,7 @@ exports.helloDb = helloDb;
 exports.createTables = createTables;
 exports.fetchTranslations = fetchTranslations;
 exports.fetchUsers = fetchUsers;
+exports.fetchTeams = fetchTeams;
 exports.closeDbLayer = closeDbLayer;
 
 // db.close();

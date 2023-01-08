@@ -1,7 +1,7 @@
 TODOs:
 Last updated Jan 7:
 
-1. EJS rendering for translations, users, teams.
+1. EJS rendering for translations, users, teams. DONE.
 2. Login / Logout with cookies logic. 
 3. Host on AWS Elastic beanstalk.
 4. Host on Google cloud.

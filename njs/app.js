@@ -2,24 +2,21 @@
 // NodeJs ExpressJs server for Talkbox DHS app.
 // 
 
-// Code comes from the samples: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/appengine
 
 "use strict";
 
 var express = require('express');
-
 var app = express();
-
 var db = require('./lib/dblayer.js');
 
 const testdata = require('./lib/testdata.js');
-
 const { createLightship } = require('lightship');
-
 const lightship = createLightship();
 
-app.set('view engine', 'ejs');
 
+///////////////////////
+// Setup ExpressJs routes.
+app.set('view engine', 'ejs');
 app.use(express.static('files'));
 
 app.get('/', (req, resp) => {
@@ -43,6 +40,13 @@ app.get('/users.html', async (req, resp) => {
     resp.render('users.ejs', {rowlist: users});
 });
 
+app.get('/teams.html', async (req, resp) => {
+    const teams = await db.fetchTeams();
+    console.log("Fetched teams:" + teams);
+    resp.render('teams.ejs', {rowlist: teams});
+    //resp.send('Teams: ' + JSON.stringify(teams));
+});
+
 app.post('/', (req, resp) => {
     resp.send('Got a POST Requst.');
 });
@@ -52,9 +56,9 @@ app.get('/trans', async (req, resp) => {
     resp.send('Fetched translations');
 });
 
+/////////////////////
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
-
 
 console.log("Current port = " + PORT);
 
@@ -85,3 +89,8 @@ process.on('SIGTERM', () => {
 // Good one on module.exports vs exports: https://www.sitepoint.com/understanding-module-exports-exports-node-js/
 
 module.exports = app;
+
+
+// References:
+//
+// Samples: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/appengine

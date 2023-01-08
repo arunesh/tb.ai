@@ -1,0 +1,28 @@
+<%- include('partials/header.ejs'); -%>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <h5 class="py-3" >List of Teams and their Users</h3>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>TeamID</th>
+              <th>List of UserIDs </th>
+            </tr>
+           </thead>
+         <tbody>
+         <% for (let teamid in rowlist) { %>
+            <tr>
+              <td><%= teamid %></td>
+              <td><%= rowlist[teamid] %> </td>
+            </tr>
+         <% }; %>
+         </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- These two divs are from the header --!>
+  </div>
+</div>
+<%- include('partials/footer.ejs'); -%>
