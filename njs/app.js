@@ -19,6 +19,18 @@ const lightship = createLightship();
 app.set('view engine', 'ejs');
 app.use(express.static('files'));
 
+
+// Parser to parse req.body field for certain "Content-Type" header field values:
+// body-parser is an ExpressJs middleware to parse various types of encodings including JSON, Raw, Text and URL-encoded. Express provides this
+// as a built-in now, no need to explicity add. http://expressjs.com/en/5x/api.html#express.urlencoded
+// It does not do multi-part.
+// More here: http://expressjs.com/en/resources/middleware/body-parser.html
+// Valid values for the Content-Type field in the request header: https://www.ibm.com/docs/en/order-management?topic=services-specifying-http-headers
+//
+// parsing the incoming data per above comments.
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, resp) => {
     resp.redirect('/login.html');
 });
