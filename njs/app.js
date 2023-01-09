@@ -40,8 +40,7 @@ app.use(session({
     saveUninitialized:true,
     cookie: { maxAge: oneDay },
     resave: false
-});
-
+}));
 
 app.get('/', (req, resp) => {
     resp.redirect('/login.html');
@@ -49,6 +48,10 @@ app.get('/', (req, resp) => {
 
 app.get('/transtest', (req, resp) => {
     resp.render('translations.ejs', {rowlist: testdata.trans});
+});
+
+app.get('/dash.html', (req, resp) => {
+    resp.render('dash.ejs');
 });
 
 app.get('/translations.html', async (req, resp) => {
@@ -83,7 +86,7 @@ app.post('/', (req, resp) => {
 
 app.post('/login', (req, resp) => {
     console.log("Received values:" + JSON.stringify(req.body));
-    resp.send('HOLD ON');
+    resp.send({ Success: "Logged in successfully"});
 });
 
 /////////////////////
