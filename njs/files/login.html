@@ -30,14 +30,16 @@
 
 						document.getElementById("checkparent").style.visibility = "visible";
 						document.getElementById("check").innerHTML = response.Success;
+                        let timeout = 3000;
+                        if (response.redirect == true) timeout = 1500;
 						//ADD THIS CODE
 						setTimeout(() => {
 							document.getElementById("check").innerHTML = "";
 						    document.getElementById("checkparent").style.visibility = "hidden";
-						}, 3000);
-						if (response.Success == "Success!") {
-							document.getElementById("aa").click();
-						};
+						    if (response.redirect == true) {
+						    	document.getElementById("aa").click();
+						    };
+						}, timeout);
 					},
 					error: () => {
 					}
@@ -79,7 +81,7 @@
         <div class="p-2 mb-2 bg-danger text-white" style="visibility:hidden" id="checkparent">
 			<span id="check"></span>
         </div>
-		<div id="LangTable"><a href="/profile" id="aa"></a>
+		<div id="LangTable"><a href="/dash.html" id="aa"></a>
 		</div>
 		<div><span>Did you forget your password? </span><a href="/forgetpass">click here</a>
 		</div>

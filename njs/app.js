@@ -86,7 +86,7 @@ app.post('/', (req, resp) => {
 
 app.post('/login', (req, resp) => {
     console.log("Received values:" + JSON.stringify(req.body));
-    resp.send({ Success: "Logged in successfully"});
+    resp.send({ Success: "Logged in successfully. Redirecting ..", redirect: true});
 });
 
 /////////////////////
